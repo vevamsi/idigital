@@ -1,0 +1,107 @@
+<app-header></app-header>
+<div class="container-fluid">
+  <h4>Products</h4>
+  <div class="row">
+    <div class="col-sm-8">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th width="30%">Product</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th width="10%"(click)="sort('price')">Price&nbsp;<i class="fa fa-sort"></i></th>
+            <th width="10%">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of list | orderBy: key: reverse |paginate: {itemsPerPage: 5,currentPage: p};">
+            <td>
+              <img
+                src="http://localhost:8080/{{ p.photo }}"
+                style="width: 70px;height:70px"
+                class="mr-2 img-thumbnail"
+              />{{ p.pname }}
+            </td>
+            <td>{{ p.category.catname }}</td>
+            <td>{{ p.descr }}</td>
+            <td>{{ p.price }}</td>
+            <td>
+              <button
+                (click)="deleteProduct(p.id)"
+                class="btn btn-danger btn-sm mr-2"
+              >
+                Delete
+              </button>
+              <button
+                (click)="editProduct(p)"
+                class="btn btn-primary btn-sm"
+              >
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </table>
+    </div>
+    <div class="col-sm-4">
+      <h4 class="p-2 border-bottom border-success" *ngIf="!edit">Add Product</h4>
+      <h4 class="p-2 border-bottom border-success" *ngIf="edit">Edit Product</h4>
+      <form [formGroup]="fg" (submit)="saveproduct(fg.value)" novalidate>
+        <div class="form-group">
+          <label>Plant Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="pname"
+            name="pname"
+          />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select
+            class="form-control"
+            formControlName="category"
+            name="category"
+          >
+            <option value="">Select Category</option>
+            <option *ngFor="let c of cats" value="{{ c.id }}">
+              {{ c.catname }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="descr"
+            name="descr"
+          />
+        </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input
+            type="number"
+            min="1"
+            class="form-control"
+            formControlName="price"
+            name="price"
+          />
+        </div>
+        <div class="form-group">
+          <label>Plant Photo</label>
+          <input
+            type="file"
+            class="form-control"
+            formControlName="pic"
+            (change)="saveFile($event)"
+            accept=".jpg,.png"
+            name="pic"
+          />
+        </div>
+        <input type="submit" value="Save Product" class="btn btn-primary" />
+      </form>
+    </div>
+  </div>
+</div>
