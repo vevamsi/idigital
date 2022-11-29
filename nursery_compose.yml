@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+
+
+
+  nursery-backend:
+
+    image: "postgres:9.6-alpine"
+
+    container_name: nursery-backend
+
+    volumes:
+
+      - nursery-data:/var/lib/postgresql/data
+
+    ports:
+
+      - 5432:5432
+
+    environment:
+
+      - POSTGRES_DB=nursery
+
+      - POSTGRES_USER=postgres
+
+      - POSTGRES_PASSWORD=1234
+
+
+
+  nursery-backend:
+
+    image: vevamsi/nursery_backend
+
+    container_name: nursery-backend
+
+    environment:
+
+      - DB_SERVER=nursery-backend
+
+      - POSTGRES_DB=nursery
+
+      - POSTGRES_USER=postgres
+
+      - POSTGRES_PASSWORD=1234
+
+    ports:
+
+      - 8080:8080
+
+    links:
+
+      - nursery-backend
+
+volumes:
+
+  nursery-data:
