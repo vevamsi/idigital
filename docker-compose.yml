@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    image: 'postgres:9.6-alpine'
+    ports:
+           - "5432:5432"
+    environment:
+           - POSTGRES_DB=nursery  
+           - POSTGRES_USER=postgres
+           - POSTGRES_PASSWORD=1234
+    volumes:
+           - nursery-data:/var/lib/postgresql/data
+    healthcheck:
+           test: ["CMD-SHELL","pg_isready"]
+           timeout: 20s
+           interval: 10s
+           retries: 5
+    restart: always
+  backendserver:
+    image: 'vevamsi/nursery_backend:vamsi'
+    ports:
+           - "8080"
+    links:
+           - "db"
+    depends_on:
+           - "db"
+    restart: always
+  frontend:
+    image: 'vevamsi/frontend_server:vamsi'
+    links:
+           - "backendserver"
+    depends_on:
+           - "backendserver"
+    ports:
+           - "80:80"
+volumes:
+       nursery-data:
